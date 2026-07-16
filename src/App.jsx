@@ -1,134 +1,173 @@
 import React, { useState, useMemo } from 'react';
-import { Search, Info, Flame, Target, Utensils, CheckCircle, Star } from 'lucide-react';
+import { Search, Info, Flame, Target, Utensils, CheckCircle, Star, Store, MapPin } from 'lucide-react';
 
 const MENU_DATA = [
   {
     id: 1,
     title: "Double-Decker Naked Grilled Club + Mac",
-    source: "Chick-fil-A (Frisco)",
-    category: "Full Meals",
+    source: "Chick-fil-A",
+    category: "RESTAURANT MEALS",
     calories: 840,
     protein: 101,
-    description: "2 Grilled Filets, 2 slices Pepper Jack cheese melted on top, wrapped in lettuce/tomato, plus a 12-count Grilled Nugget and a small Mac & Cheese side. Hack: use Buffalo sauce for the dressing.",
-    imageKeyword: "grilled-chicken"
+    description: "Full balanced meal stack: 2 Grilled Filets + 2 slices Pepper Jack cheese melted on top wrapped in lettuce, paired with a 12-count Grilled Nugget and a small Mac & Cheese side. The ultra-lean nuggets pull the entire meal's macro profile back into safety.",
+    imageUrl: "https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?w=600&auto=format&fit=crop&q=80",
+    brand: "Chick-fil-A",
+    stores: []
   },
   {
     id: 2,
-    title: "The Double-Chicken 'Clean' Bowl",
-    source: "Chipotle",
-    category: "Quick Grab / Restaurant",
-    calories: 410,
-    protein: 66,
-    description: "Double chicken, fajita veggies, tomato salsa, romaine lettuce, light cheese. NO rice, NO beans, NO guac.",
-    imageKeyword: "mexican-bowl"
+    title: "12-Count Grilled Nuggets",
+    source: "Chick-fil-A",
+    category: "RESTAURANT INDIVIDUAL ITEMS",
+    calories: 200,
+    protein: 38,
+    description: "Standalone juicy, pure grilled chicken breast nuggets. An elite macro shield tool.",
+    imageUrl: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&auto=format&fit=crop&q=80",
+    brand: "Chick-fil-A",
+    stores: []
   },
   {
     id: 3,
-    title: "Blackened Shrimp Naked Taco (x3)",
-    source: "Velvet Taco (Parkwood Blvd)",
-    category: "Quick Grab / Restaurant",
-    calories: 330,
-    protein: 36,
-    description: "Ordered as a 3-taco bundle: Blackened shrimp, napa slaw, and corn pico wrapped tightly in lettuce leaves. Hold the sriracha aioli and avocado.",
-    imageKeyword: "shrimp-taco"
+    title: "The Double-Chicken 'Clean' Bowl",
+    source: "Chipotle",
+    category: "RESTAURANT MEALS",
+    calories: 410,
+    protein: 66,
+    description: "Double chicken, fajita veggies, fresh tomato salsa, romaine lettuce, and a light sprinkle of cheese. Absolutely no rice, beans, or guacamole.",
+    imageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80",
+    brand: "Chipotle",
+    stores: []
   },
   {
     id: 4,
-    title: "Black Lentil Double Chicken Power Bowl",
-    source: "CAVA (Eldorado Pkwy)",
-    category: "Full Meals",
-    calories: 830,
-    protein: 78,
-    description: "Supergreens base, 1 scoop Black Lentils, double grilled chicken, tzatziki, cucumber tomato salad, pickled onions. No hummus, no feta.",
-    imageKeyword: "mediterranean-food"
+    title: "Blackened Shrimp Naked Taco Bundle",
+    source: "Velvet Taco",
+    category: "RESTAURANT MEALS",
+    calories: 330,
+    protein: 36,
+    description: "3-taco custom order: Clean blackened shrimp, crisp napa slaw, and corn pico wrapped tightly inside lettuce leaves. Must hold the high-fat sriracha aioli and avocado.",
+    imageUrl: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&auto=format&fit=crop&q=80",
+    brand: "Velvet Taco",
+    stores: []
   },
   {
     id: 5,
-    title: "The Gym-Style Chicken Platter",
-    source: "Shah's Halal Food (Preston Rd)",
-    category: "Quick Grab / Restaurant",
-    calories: 450,
-    protein: 50,
-    description: "Chicken over lettuce and salad mix only. Skip the rice, pita bread, and white sauce. Top with hot sauce or green sauce.",
-    imageKeyword: "halal-chicken"
+    title: "Black Lentil Double Chicken Bowl",
+    source: "CAVA",
+    category: "RESTAURANT MEALS",
+    calories: 830,
+    protein: 78,
+    description: "Supergreens base, 1 scoop of high-protein Black Lentils, double grilled chicken, tzatziki, cucumber tomato salad, and pickled onions.",
+    imageUrl: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80",
+    brand: "CAVA",
+    stores: []
   },
   {
     id: 6,
-    title: "Flying Dutchman Mod (x3 Patties)",
-    source: "In-N-Out",
-    category: "Quick Grab / Restaurant",
-    calories: 300,
-    protein: 30,
-    description: "3 a la carte beef patties served plain or wrapped in lettuce (Protein Style). Skip the standard spread and processed cheese slices.",
-    imageKeyword: "burger-patty"
+    title: "Quest Tortilla Style Protein Chips",
+    source: "Quest Nutrition",
+    category: "GROCERY STORE INDIVIDUAL ITEMS",
+    calories: 140,
+    protein: 19,
+    description: "Chili Lime or Loaded Taco crispy protein chips made from high-grade dairy protein isolates.",
+    imageUrl: "https://images.unsplash.com/photo-1518047601542-79f18c655718?w=600&auto=format&fit=crop&q=80",
+    brand: "Quest",
+    stores: ["Walmart", "H-E-B", "Target"]
   },
   {
     id: 7,
-    title: "Buffalo Chicken 'Cloud' Dip",
-    source: "Walmart (At Home)",
-    category: "Assembled Snacks",
-    calories: 160,
-    protein: 29,
-    description: "Blend 1/2 cup Great Value Fat-Free Cottage cheese with 1 pouch of Starkist White Chicken and 2 tbsp Frank's RedHot. Dip with raw celery or cucumber slices.",
-    imageKeyword: "chicken-dip"
+    title: "Fat-Free Cottage Cheese",
+    source: "Great Value / Generic",
+    category: "GROCERY STORE INDIVIDUAL ITEMS",
+    calories: 80,
+    protein: 12,
+    description: "Per 1/2 cup serving. Pure, slow-digesting casein protein block with zero fat content.",
+    imageUrl: "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&auto=format&fit=crop&q=80",
+    brand: "Generic",
+    stores: ["Walmart", "H-E-B", "Kroger"]
   },
   {
     id: 8,
-    title: "Pro-FroYo Peanut Butter Bark",
-    source: "Walmart (At Home)",
-    category: "Assembled Snacks",
-    calories: 175,
-    protein: 30,
-    description: "Mix 1 cup plain nonfat Greek yogurt with 1 tbsp Powdered Peanut Butter and stevia. Spread flat on parchment paper and freeze for 25 minutes.",
-    imageKeyword: "frozen-yogurt"
+    title: "Buffalo Chicken 'Cloud' Dip",
+    source: "Home Prepared",
+    category: "ASSEMBLED SNACKS",
+    calories: 160,
+    protein: 29,
+    description: "Blended combination snack: Mix 1/2 cup Fat-Free Cottage cheese with 1 canned pouch of premium chicken breast and 2 tbsp Frank's RedHot. Serve with raw celery sticks.",
+    imageUrl: "https://images.unsplash.com/photo-1544148103-0773bf10d330?w=600&auto=format&fit=crop&q=80",
+    brand: "Home Cooked",
+    stores: ["Walmart", "H-E-B"]
   },
   {
     id: 9,
-    title: "Quest Tortilla Style Chips",
-    source: "Walmart (Pantry)",
-    category: "Grocery Store",
-    calories: 140,
-    protein: 19,
-    description: "Chili Lime or Loaded Taco protein chips. Made from high-quality dairy protein isolates to scratch the savory chip itch.",
-    imageKeyword: "chips"
+    title: "90-Second Sweet Egg White Crepe",
+    source: "Home Prepared",
+    category: "ASSEMBLED SNACKS",
+    calories: 60,
+    protein: 12,
+    description: "Pan-fried 1/2 cup liquid egg whites dusted with cinnamon and stevia, rolled up thin and covered in zero-calorie maple syrup.",
+    imageUrl: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=600&auto=format&fit=crop&q=80",
+    brand: "Home Cooked",
+    stores: ["Walmart", "H-E-B", "Kroger"]
   },
   {
     id: 10,
-    title: "90-Second Sweet Egg White Crepe",
-    source: "Walmart (At Home)",
-    category: "Assembled Snacks",
-    calories: 60,
-    protein: 12,
-    description: "Pour 1/2 cup liquid egg whites into a skillet with cinnamon and stevia. Roll it up and drizzle generously with Walden Farms Zero-Calorie Pancake Syrup.",
-    imageKeyword: "crepe"
-  },
-  {
-    id: 11,
     title: "Premier Protein Shake (11oz)",
-    source: "Walmart (Fridge)",
-    category: "Drinks",
+    source: "Premier Protein",
+    category: "GROCERY STORE INDIVIDUAL ITEMS",
     calories: 160,
     protein: 30,
-    description: "Ready-to-drink vanilla or chocolate shake. The perfect cold safety net to grab on the way out the door.",
-    imageKeyword: "protein-shake"
+    description: "Pre-made convenience shake hitting a sleek ~5.3:1 macro profile. Keep chilled.",
+    imageUrl: "https://images.unsplash.com/photo-1579954115545-a95591f28bfc?w=600&auto=format&fit=crop&q=80",
+    brand: "Premier Protein",
+    stores: ["Walmart", "Target", "Kroger"]
   }
 ];
 
-const CATEGORIES = ["All", "Quick Grab / Restaurant", "Grocery Store", "Assembled Snacks", "Full Meals", "Drinks"];
+const CATEGORIES = [
+  "All", 
+  "RESTAURANT INDIVIDUAL ITEMS", 
+  "RESTAURANT MEALS", 
+  "GROCERY STORE INDIVIDUAL ITEMS", 
+  "ASSEMBLED SNACKS"
+];
 
-// Fallback high-quality images mapping using standard unsplash images
-const IMAGE_MAP = {
-  "grilled-chicken": "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?auto=format&fit=crop&w=600&q=80",
-  "mexican-bowl": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80",
-  "shrimp-taco": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=80",
-  "mediterranean-food": "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80",
-  "halal-chicken": "https://images.unsplash.com/photo-1564834724105-918b73d1b9e0?auto=format&fit=crop&w=600&q=80",
-  "burger-patty": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
-  "chicken-dip": "https://images.unsplash.com/photo-1577906096429-f73c2c312435?auto=format&fit=crop&w=600&q=80",
-  "frozen-yogurt": "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&w=600&q=80",
-  "chips": "https://images.unsplash.com/photo-1566478989037-e124c1507008?auto=format&fit=crop&w=600&q=80",
-  "crepe": "https://images.unsplash.com/photo-1519676867240-f03562e64548?auto=format&fit=crop&w=600&q=80",
-  "protein-shake": "https://images.unsplash.com/photo-1620189507195-68309c04c4d0?auto=format&fit=crop&w=600&q=80",
+const BRAND_COLORS = {
+  "Chick-fil-A": "bg-red-500/20 text-red-400 border-red-500/30",
+  "Chipotle": "bg-amber-700/20 text-amber-500 border-amber-700/30",
+  "Velvet Taco": "bg-fuchsia-600/20 text-fuchsia-400 border-fuchsia-600/30",
+  "CAVA": "bg-orange-500/20 text-orange-400 border-orange-500/30",
+  "Quest": "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  "Premier Protein": "bg-indigo-600/20 text-indigo-400 border-indigo-600/30",
+  "Generic": "bg-slate-500/20 text-slate-300 border-slate-500/30",
+  "Home Cooked": "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+};
+
+const STORE_COLORS = {
+  "Walmart": "bg-[#0071ce]/20 text-[#0071ce] border-[#0071ce]/30",
+  "Target": "bg-[#e31837]/20 text-[#e31837] border-[#e31837]/30",
+  "H-E-B": "bg-[#ed1c24]/20 text-[#ed1c24] border-[#ed1c24]/30",
+  "Kroger": "bg-[#00529b]/20 text-[#4a90e2] border-[#00529b]/30"
+};
+
+const BrandBadge = ({ brand }) => {
+  const colorClass = BRAND_COLORS[brand] || "bg-slate-700/50 text-slate-300 border-slate-600";
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider border ${colorClass}`}>
+      <MapPin className="w-3 h-3" />
+      {brand}
+    </span>
+  );
+};
+
+const StoreBadge = ({ store }) => {
+  const colorClass = STORE_COLORS[store] || "bg-slate-700/50 text-slate-300 border-slate-600";
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold border ${colorClass}`}>
+      <Store className="w-2.5 h-2.5" />
+      {store}
+    </span>
+  );
 };
 
 export default function App() {
@@ -142,7 +181,8 @@ export default function App() {
       const matchesSearch =
         item.title.toLowerCase().includes(lowerQuery) ||
         item.description.toLowerCase().includes(lowerQuery) ||
-        item.source.toLowerCase().includes(lowerQuery);
+        item.brand.toLowerCase().includes(lowerQuery) ||
+        item.stores.some(s => s.toLowerCase().includes(lowerQuery));
       return matchesCategory && matchesSearch;
     });
   }, [searchQuery, selectedCategory]);
@@ -152,7 +192,7 @@ export default function App() {
       {/* Header Area */}
       <header className="sticky top-0 z-20 backdrop-blur-xl bg-slate-900/80 border-b border-slate-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
               <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
                 <Target className="w-8 h-8 text-indigo-400" />
@@ -164,13 +204,13 @@ export default function App() {
             </div>
             
             {/* Search Bar */}
-            <div className="relative w-full md:w-96">
+            <div className="relative w-full lg:w-96">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-slate-500" />
               </div>
               <input
                 type="text"
-                placeholder="Search meals, sources, or ingredients..."
+                placeholder="Search meals, brands, or stores..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full pl-10 pr-3 py-3 border border-slate-700 rounded-xl leading-5 bg-slate-800/50 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all"
@@ -184,10 +224,10 @@ export default function App() {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category)}
-                className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                className={`whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${
                   selectedCategory === category
                     ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
-                    : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+                    : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"
                 }`}
               >
                 {category}
@@ -203,10 +243,10 @@ export default function App() {
           <div className="text-center py-20">
             <Utensils className="mx-auto h-12 w-12 text-slate-600 mb-4" />
             <h3 className="text-lg font-medium text-slate-300">No items found</h3>
-            <p className="mt-1 text-slate-500">Try adjusting your search or filter.</p>
+            <p className="mt-1 text-slate-500">Try adjusting your search or category filter.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filteredData.map((item) => {
               const ratio = (item.calories / item.protein).toFixed(1);
               const isElite = parseFloat(ratio) <= 7.0;
@@ -217,41 +257,24 @@ export default function App() {
                   className="group relative bg-slate-800/80 rounded-2xl border border-slate-700/50 overflow-hidden hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full"
                 >
                   {/* Image Header */}
-                  <div className="h-48 relative overflow-hidden bg-slate-700">
+                  <div className="h-56 relative overflow-hidden bg-slate-700">
                     <img
-                      src={IMAGE_MAP[item.imageKeyword] || `https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=600&q=80`}
+                      src={item.imageUrl}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-80" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent opacity-90" />
                     
-                    {/* Source Badge */}
-                    <div className="absolute top-4 left-4">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-900/80 text-slate-200 backdrop-blur-md border border-slate-700">
-                        {item.source}
-                      </span>
-                    </div>
-
-                    {/* Ratio Badge */}
-                    <div className="absolute top-4 right-4">
-                      {isElite ? (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/30 backdrop-blur-md shadow-[0_0_15px_rgba(34,197,94,0.3)]">
-                          <Star className="w-3.5 h-3.5" />
-                          Elite ({ratio}:1)
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 backdrop-blur-md">
-                          <CheckCircle className="w-3.5 h-3.5" />
-                          Approved ({ratio}:1)
-                        </span>
-                      )}
+                    {/* Logos Area (Top Left Overlay) */}
+                    <div className="absolute top-4 left-4 flex flex-col gap-2 max-w-[80%]">
+                      {item.brand && <BrandBadge brand={item.brand} />}
                     </div>
                   </div>
 
                   {/* Card Body */}
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="mb-2">
-                      <p className="text-indigo-400 text-xs font-semibold tracking-wider uppercase mb-1">
+                      <p className="text-indigo-400 text-[10px] font-bold tracking-wider uppercase mb-1.5">
                         {item.category}
                       </p>
                       <h3 className="text-xl font-bold text-white leading-tight">
@@ -259,27 +282,56 @@ export default function App() {
                       </h3>
                     </div>
 
-                    <p className="text-slate-400 text-sm mt-3 mb-6 flex-1">
+                    <p className="text-slate-400 text-sm mt-2 mb-4 flex-1">
                       {item.description}
                     </p>
 
-                    {/* Macro Stats Footer */}
+                    {/* Store Logos Row (if applicable) */}
+                    {item.stores && item.stores.length > 0 && (
+                      <div className="mb-5 flex flex-wrap gap-1.5">
+                        {item.stores.map((store) => (
+                          <StoreBadge key={store} store={store} />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Macro Stats Footer (Refactored to single row) */}
                     <div className="pt-4 border-t border-slate-700/50 flex items-center justify-between mt-auto">
-                      <div className="flex flex-col">
-                        <span className="text-slate-500 text-xs font-medium uppercase tracking-wider">Calories</span>
-                        <div className="flex items-center gap-1.5 mt-1 text-slate-200 font-bold">
-                          <Flame className="w-4 h-4 text-orange-500" />
-                          {item.calories}
+                      <div className="flex items-center gap-4">
+                        {/* Calories */}
+                        <div className="flex flex-col">
+                          <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Cals</span>
+                          <div className="flex items-center gap-1 mt-0.5 text-slate-200 font-bold text-lg">
+                            <Flame className="w-4 h-4 text-orange-500" />
+                            {item.calories}
+                          </div>
+                        </div>
+                        
+                        <div className="h-8 w-px bg-slate-700/50" />
+                        
+                        {/* Protein */}
+                        <div className="flex flex-col">
+                          <span className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Protein</span>
+                          <div className="flex items-center gap-1 mt-0.5 text-slate-200 font-bold text-lg">
+                            <Target className="w-4 h-4 text-indigo-400" />
+                            {item.protein}g
+                          </div>
                         </div>
                       </div>
-                      
-                      <div className="h-8 w-px bg-slate-700/50" />
-                      
-                      <div className="flex flex-col items-end">
-                        <span className="text-slate-500 text-xs font-medium uppercase tracking-wider">Protein</span>
-                        <div className="flex items-center gap-1.5 mt-1 text-slate-200 font-bold">
-                          {item.protein}g
-                        </div>
+
+                      {/* Ratio Badge (Moved here) */}
+                      <div className="flex flex-col items-end shrink-0 pl-2">
+                        {isElite ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/30 shadow-[0_0_15px_rgba(34,197,94,0.15)]">
+                            <Star className="w-3.5 h-3.5" />
+                            {ratio}:1
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                            <CheckCircle className="w-3.5 h-3.5" />
+                            {ratio}:1
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
